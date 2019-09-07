@@ -2,20 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f661fcc-df85-4a3e-bd64-2e4491b70965" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/file/PlaylistManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/oms/META-INF/oms.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/oms/file/Loader.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/oms/mpack/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/oms/mpack/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/oms/mpack/Util.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/oms/mpack/Util.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/oms/net/Response.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/oms/net/Response.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/oms/net/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/oms/net/Server.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/file/Loader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mpack/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mpack/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mpack/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mpack/Util.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -100,7 +87,7 @@
       <option name="presentableId" value="Default" />
       <updated>1567824604668</updated>
       <workItem from="1567824609270" duration="2207000" />
-      <workItem from="1567862473221" duration="1992000" />
+      <workItem from="1567862473221" duration="2485000" />
     </task>
     <servers />
   </component>
