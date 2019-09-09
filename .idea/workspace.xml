@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4f661fcc-df85-4a3e-bd64-2e4491b70965" name="Default Changelist" comment="" />
+    <list default="true" id="4f661fcc-df85-4a3e-bd64-2e4491b70965" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/file/Playlists.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/file/PlaylistManager.java" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +34,9 @@
     </option>
   </component>
   <component name="ProjectId" id="1QUUKaH22U9QAD8cQongv64ecLT" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -74,6 +81,11 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="StructureViewFactory">
+    <option name="AUTOSCROLL_MODE" value="false" />
+    <option name="AUTOSCROLL_FROM_SOURCE" value="true" />
+    <option name="ACTIVE_ACTIONS" value=",VISIBILITY_SORTER" />
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -85,7 +97,9 @@
       <option name="presentableId" value="Default" />
       <updated>1567824604668</updated>
       <workItem from="1567824609270" duration="2207000" />
-      <workItem from="1567862473221" duration="2730000" />
+      <workItem from="1567862473221" duration="3105000" />
+      <workItem from="1567873868723" duration="517000" />
+      <workItem from="1567874409304" duration="6000" />
     </task>
     <servers />
   </component>
