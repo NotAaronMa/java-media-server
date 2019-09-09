@@ -7,7 +7,9 @@ import java.net.ServerSocket;
 public class Server{
     final static int port  = 8080;
     public static String name;
-
+    static String ROOT = "./web";
+    static String DEFAULT = "index.html";
+    static String NOTFOUND = "404.html";
     public static void  start(){
         try {
             ServerSocket sc = new ServerSocket(port);

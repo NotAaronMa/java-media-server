@@ -15,9 +15,7 @@ import mpack.Util;
 
 public class Response implements Runnable {
 
-    static final String ROOT = "./web";
-    static final String DEFAULT = "index.html";
-    static final String NOTFOUND = "404.html";
+
     private Socket sock;
 
     public Response(Socket s) {
@@ -51,9 +49,9 @@ public class Response implements Runnable {
         String fr = t1.nextToken(" ");
 
         if (fr.equals("/")) {
-            fr = DEFAULT;
+            fr = Server.DEFAULT;
         }
-        File f = new File(ROOT, fr);
+        File f = new File(Server.ROOT, fr);
         String mime = "text/html";
         out.println("HTTP/1.1 200 OK");
         out.println("net.Server:" + Server.name + " : 1.0");
@@ -71,10 +69,10 @@ public class Response implements Runnable {
         String fr = t1.nextToken(" ");
         //find file requested
         if (fr.equals("/")) {
-            fr = DEFAULT;
+            fr = Server.DEFAULT;
         }
         //init file io
-        File f = new File(ROOT, fr);
+        File f = new File(Server.ROOT, fr);
         String mime = "";
         byte[] data;
         //check if file exists
@@ -83,7 +81,7 @@ public class Response implements Runnable {
             data = Util.rf(f, (int) f.length());
                 Util.log("sending: " + f + " mime=" + mime, 0);
         } else {
-            data = Util.rf(new File(ROOT, "404.html"), (int) f.length());
+            data = Util.rf(new File(Server.ROOT, "404.html"), (int) f.length());
             mime = "text/html";
 
         }
