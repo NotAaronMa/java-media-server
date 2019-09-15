@@ -1,12 +1,13 @@
 package net;
 
+import mpack.Main;
 import mpack.Util;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.StringTokenizer;
 //TODO fuckin implement the POST request
@@ -49,21 +50,22 @@ public class Response implements Runnable {
     }
 
     //handle GET HEAD request
-    private void head(String req) {
+    private void head(String req) throws IOException{
         StringTokenizer t1 = new StringTokenizer(req);
         t1.nextToken(" ");
         String fr = t1.nextToken(" ");
-
         if (fr.equals("/")) {
             fr = Server.DEFAULT;
+        }else if(Files.notExists(Path.of(Main.ROOT, req))){
+            fr = Server.NOTFOUND;
         }
-        File f = new File(Server.ROOT, fr);
-        String mime = "text/html";
+        Path p = Path.of(Main.ROOT, req);
+        String mime = Files.probeContentType(p);
         out.println("HTTP/1.1 200 OK");
         out.println("net.Server:" + Server.name + " : 1.0");
         out.println("Date: " + new Date());
         out.println("Content-type: " + mime);
-        out.println("Content-length: " + f.length());
+        out.println("Content-length: " + Files.size(p));
         out.flush();
 
     }
@@ -80,21 +82,18 @@ public class Response implements Runnable {
         //init file io
         byte[]data;
         String mime;
-        File f;
-        f = new File(Server.ROOT, fr);
-        mime = Files.probeContentType(Paths.get(f.getPath()));
+        Path p = Paths.get(Main.ROOT, fr);
+        mime = Files.probeContentType(p);
 
         //check if file exists
-        if (Server.cansend(f)) {
-            data = Util.rf(f, (int) f.length());
-            Util.log("sending: " + f + " mime=" + mime, 0);
-            System.out.println(req);
-        } else {
-            Util.log("404 file:" + f + " not found", 0);
-            f = new File(Server.ROOT, "404.html");
-            data = Util.rf(f, (int) f.length());
-            mime = "text/html";
+        if (Server.cansend(p)) {
+            data = Util.rf(p);
+            Util.log("sending: " + fr + " mime=" + mime, 0);
+        }else{
+            data = Util.rf(Paths.get(Main.ROOT, Server.NOTFOUND));
+            Util.log("404 " + fr + "not found. sending: " + Server.NOTFOUND + " mime=" + mime, 0);
         }
+
 
         //send headers
         out.println("HTTP/1.1 200 OK");

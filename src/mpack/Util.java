@@ -2,24 +2,19 @@ package mpack;
 
 import net.Server;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.StringTokenizer;
 
 public class Util {
-    public static byte[] rf(File f, int l) throws IOException {
-        FileInputStream in = null;
-        byte[] data = new byte[l];
+    public static byte[] rf(String dir) throws IOException {
+        byte[] data = Files.readAllBytes(Path.of(dir));
+        return data;
+    }
 
-        try {
-            in = new FileInputStream(f);
-            in.read(data);
-        } finally {
-            if (in != null)
-                in.close();
-        }
-
+    public static byte[] rf(Path dir) throws IOException {
+        byte[] data = Files.readAllBytes(dir);
         return data;
     }
     public static String bts(byte[]bytes){
@@ -41,10 +36,9 @@ public class Util {
         }
     }
 
-    public static void parseConfig(String cfgfile) {
-        File f = new File(cfgfile);
+    public static void parseConfig(String cfgfile) { ;
         try {
-            byte[] inb = (rf(f, (int) f.length()));
+            byte[] inb = (rf(cfgfile));
             char[] chars = new char[inb.length];
             for (int i = 0; i < inb.length; i++) {
                 chars[i] = (char) inb[i];

@@ -1,18 +1,19 @@
 package net;
 
+import mpack.Main;
 import mpack.Util;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-
-//TODO ability to generify web root and default
 public class Server {
     final static int port = 8080;
     public static String name;
-    static String ROOT = "./web";
     static String DEFAULT = "index.html";
+    static String NOTFOUND = "404.html";
     public static void start() {
         try {
             ServerSocket sc = new ServerSocket(port);
@@ -30,9 +31,9 @@ public class Server {
     }
 
     //handle fileNotFound and permissions
-    public static boolean cansend(File s){
-        if(s.exists()) {
-            return s.getAbsolutePath().contains(new File(ROOT).getAbsolutePath());
+    public static boolean cansend(Path p){
+        if(Files.exists(p)) {
+            return p.toString().contains(Main.ROOT);
         }else{
             return false;
         }

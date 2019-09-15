@@ -3,14 +3,14 @@ package mpack;
 import net.Server;
 
 public class Main {
+    public static String ROOT = "./web";
 
     public static final String help =
             "-c      chose configfile\n" +
                     "-h      print this thingy" +
                     "-v      verbose";
 
-
-    public static boolean verbose;
+public static boolean verbose;
     public static String configfile;
 
     public static void main(String[] args) {
