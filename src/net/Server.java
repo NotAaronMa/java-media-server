@@ -1,16 +1,19 @@
 package net;
-import mpack.*;
 
-import java.io.*;
+import mpack.Util;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.ServerSocket;
 
-public class Server{
-    final static int port  = 8080;
+
+//TODO ability to generify web root and default
+public class Server {
+    final static int port = 8080;
     public static String name;
     static String ROOT = "./web";
     static String DEFAULT = "index.html";
-    static String NOTFOUND = "404.html";
-    public static void  start(){
+    public static void start() {
         try {
             ServerSocket sc = new ServerSocket(port);
             Util.log("Server started.\nListening for connections on port : " + port + " ...\n", 1);
@@ -21,8 +24,17 @@ public class Server{
                 new Thread(response).start();
                 Util.log("Server ready for more connections", 0);
             }
-        }catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    //handle fileNotFound and permissions
+    public static boolean cansend(File s){
+        if(s.exists()) {
+            return s.getAbsolutePath().contains(new File(ROOT).getAbsolutePath());
+        }else{
+            return false;
         }
     }
 }

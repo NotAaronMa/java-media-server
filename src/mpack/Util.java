@@ -1,5 +1,7 @@
 package mpack;
 
+import net.Server;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,30 +22,40 @@ public class Util {
 
         return data;
     }
+    public static String bts(byte[]bytes){
+        char[] chars= new char[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            chars[i] = (char) bytes[i];
+        }
+        return new String(chars);
 
-    public static void log(String s, int priority){
+    }
+
+
+
+    public static void log(String s, int priority) {
         boolean veb = Main.verbose;
-        if(veb || priority == 1){
+        if (veb || priority == 1) {
             System.out.println(s);
 
         }
     }
 
-    public static void parseConfig(String cfgfile){
+    public static void parseConfig(String cfgfile) {
         File f = new File(cfgfile);
         try {
-            byte[]inb = (rf(f, (int) f.length()));
-            char[]chars = new char[inb.length];
-            for(int i = 0; i < inb.length; i++){
-                chars[i] =(char)inb[i];
+            byte[] inb = (rf(f, (int) f.length()));
+            char[] chars = new char[inb.length];
+            for (int i = 0; i < inb.length; i++) {
+                chars[i] = (char) inb[i];
             }
             StringTokenizer t = new StringTokenizer(new String(chars));
-            while(t.hasMoreElements()){
+            while (t.hasMoreElements()) {
                 String s = t.nextToken("\n");
                 System.out.print(s + "\n");
 
             }
-        }catch(IOException ex){
+        } catch (IOException ex) {
             Util.log(ex.getMessage(), 1);
 
         }
