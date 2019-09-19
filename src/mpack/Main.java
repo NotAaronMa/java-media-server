@@ -1,22 +1,24 @@
 package mpack;
-
+import file.Loader;
 import net.Server;
 
-public class Main {
-    public static String ROOT = "./web";
+import java.io.File;
 
-    public static final String help =
-            "-c      chose configfile\n" +
-                    "-h      print this thingy" +
-                    "-v      verbose";
+public class Main {
+    public static String ROOT;
+    public static String WEB_ROOT;
 
 public static boolean verbose;
     public static String configfile;
 
     public static void main(String[] args) {
+        ROOT = new File("").getAbsolutePath();
+        WEB_ROOT = ROOT+"/web";
+
         parseArgs(args);
         Util.log("reading from configfile: " + configfile, 0);
         Util.parseConfig(configfile);
+        Loader.update();
 
         Server.start();
     }
@@ -29,7 +31,7 @@ public static boolean verbose;
             } else if (args[i].equals("-c")) {
                 configfile = args[++i];
             } else {
-                System.out.println(help);
+                System.out.println("ur bad");
             }
         }
     }

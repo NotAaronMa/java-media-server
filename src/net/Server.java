@@ -1,10 +1,10 @@
+//TODO multithread this bitch
 package net;
 
 import mpack.Main;
 import mpack.Util;
 
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -33,7 +33,7 @@ public class Server {
     //handle fileNotFound and permissions
     public static boolean cansend(Path p){
         if(Files.exists(p)) {
-            return p.toString().contains(Main.ROOT);
+            return p.toString().contains(Main.WEB_ROOT);
         }else{
             return false;
         }

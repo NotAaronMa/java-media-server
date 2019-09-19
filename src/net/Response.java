@@ -1,3 +1,7 @@
+
+//TODO make thread reuasable
+//TODO fuckin implement the POST request
+
 package net;
 
 import mpack.Main;
@@ -10,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.StringTokenizer;
-//TODO fuckin implement the POST request
 
 
 public class Response implements Runnable {
@@ -56,10 +59,10 @@ public class Response implements Runnable {
         String fr = t1.nextToken(" ");
         if (fr.equals("/")) {
             fr = Server.DEFAULT;
-        }else if(Files.notExists(Path.of(Main.ROOT, req))){
+        }else if(Files.notExists(Path.of(Main.WEB_ROOT, req))){
             fr = Server.NOTFOUND;
         }
-        Path p = Path.of(Main.ROOT, req);
+        Path p = Path.of(Main.WEB_ROOT, req);
         String mime = Files.probeContentType(p);
         out.println("HTTP/1.1 200 OK");
         out.println("net.Server:" + Server.name + " : 1.0");
@@ -82,7 +85,7 @@ public class Response implements Runnable {
         //init file io
         byte[]data;
         String mime;
-        Path p = Paths.get(Main.ROOT, fr);
+        Path p = Paths.get(Main.WEB_ROOT, fr);
         mime = Files.probeContentType(p);
 
         //check if file exists
@@ -90,10 +93,12 @@ public class Response implements Runnable {
             data = Util.rf(p);
             Util.log("sending: " + fr + " mime=" + mime, 0);
         }else{
-            data = Util.rf(Paths.get(Main.ROOT, Server.NOTFOUND));
+            data = Util.rf(Paths.get(Main.WEB_ROOT, Server.NOTFOUND));
             Util.log("404 " + fr + "not found. sending: " + Server.NOTFOUND + " mime=" + mime, 0);
         }
 
+        //send only requested bytes
+        //int bs,bf;
 
         //send headers
         out.println("HTTP/1.1 200 OK");
@@ -136,10 +141,11 @@ public class Response implements Runnable {
             System.out.println(buffer);
             //copy
 
-            sock.close();
+
             in.close();
             out.close();
             dout.close();
+            sock.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
