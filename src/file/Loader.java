@@ -3,66 +3,82 @@ package file;
 import mpack.Main;
 import mpack.Util;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 //TODO create a class to generate html as string
-//TODO change to non-blocking io
 public class Loader {
-    static String vidDir = "/web/vid";
-    static String genDir = "/web/gen";
 
-    static String vidRoot;
-    static String pageRoot;
+    //Files relative to MAIN.ROOT
 
+    static String vidDir = "/vid/";
+    static String genDir = "/a/";
     static String pltemp = "/res/templates/pltemp.html";
+    static Path[] plists;
 
 
-    private static File[]c;
-
-    public static void update(){
-        vidRoot = new File(Main.ROOT, vidDir).getAbsolutePath();
-        pageRoot = new File(Main.ROOT, genDir).getAbsolutePath();
-        pltemp = new File(Main.ROOT, pltemp).getAbsolutePath();
-        c = new File(vidRoot).listFiles();
-        
-        for(int i = 0;i < c.length;i++) {
-            try {
-                WritePlPage(c[i], new File(pageRoot, c[i].getName()));
-            }catch(IOException ex){
-                Util.log(ex.getMessage(), 1);
+    public static void update() {
+        try {
+            Path genpath = Path.of(Main.WEB_ROOT, genDir);
+            if (!Files.exists(genpath)) {
+                Files.createDirectory(genpath);
             }
+            plists = Util.getChildren(Paths.get(Main.WEB_ROOT, vidDir));
+
+            for (int i = 0; i < plists.length; i++) {
+                String filename = plists[i].getFileName().toString();
+                Path outFile = Path.of(Main.WEB_ROOT, genDir, filename + ".html");
+
+                Files.deleteIfExists(outFile);
+                Files.createFile(outFile);
+                Path vdir = Path.of(Main.WEB_ROOT, vidDir, filename);
+                WritePlPage(vdir, outFile);
+            }
+
+        } catch (IOException e) {
+            Util.log("Exception: File " + e.getMessage() + " not found", 0);
+
         }
+
+
     }
 
-
-    private static void WritePlPage(File pl, File out) throws IOException {
-        out = new File(out.getAbsolutePath().concat(".html"));
-        out.createNewFile();
-
+    private static void WritePlPage(Path vdir, Path outFile) throws IOException {
+        //only make one level to avoid fucking up filesystem
         String flag = "<!-- FLAG PUT LINKS HERE -->";
-        PrintWriter fout = new PrintWriter(new FileWriter(out));
-        List<String> sl = Files.readAllLines(Paths.get(pltemp));
+        Files.deleteIfExists(outFile);
+        Files.createFile(outFile);
 
-        String input;
-        int c = 0;
+        Path[] paths = Util.getChildren(vdir);
+        String[] input = Util.readLines(Path.of(Main.ROOT, pltemp));
+        StringBuffer buffer = new StringBuffer();
 
-        do{
-            input = sl.get(c);
-            fout.println(input);
-            c++;
-        }while(!input.contains(flag));
-
-        File[]vid = pl.listFiles();
-        System.out.println(vid.length);
-        for(int i = 0; i < vid.length; i++){
-            fout.println("<a href=\"" + vid[i].getAbsolutePath() + "\"> fjdasf </a>" );
+        int i;
+        for (i = 0; (!input[i].contains(flag)) && i < input.length; i++) {
+            buffer.append(input[i] + "\n");
         }
-        for( ; c < sl.size(); c++){
-           fout.println(sl.get(c));
+        for (int j = 0; j < paths.length; j++) {
+            buffer.append(genVidEntry(paths[j]));
+
         }
-        fout.close();
+        for (; i < input.length; i++) {
+            buffer.append(input[i] + "\n");
+        }
+        Files.writeString(outFile, buffer.toString());
+
     }
+
+    //note give this function absolute path
+    private static String genVidEntry(Path video) {
+        String vidDir = video.toAbsolutePath().toString().replace(Main.WEB_ROOT, "");
+        String filename = video.getFileName().toString();
+
+        return "<li class = \"video-select\" id=\"" + vidDir + "\">" + filename + "</li> \n";
+
+
+
+    }
+
 }

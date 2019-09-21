@@ -1,4 +1,5 @@
 package mpack;
+
 import file.Loader;
 import net.Server;
 
@@ -8,12 +9,12 @@ public class Main {
     public static String ROOT;
     public static String WEB_ROOT;
 
-public static boolean verbose;
+    public static boolean verbose;
     public static String configfile;
 
     public static void main(String[] args) {
         ROOT = new File("").getAbsolutePath();
-        WEB_ROOT = ROOT+"/web";
+        WEB_ROOT = ROOT + "/web";
 
         parseArgs(args);
         Util.log("reading from configfile: " + configfile, 0);

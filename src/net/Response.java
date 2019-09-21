@@ -9,6 +9,7 @@ import mpack.Util;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,6 +83,10 @@ public class Response implements Runnable {
         if (fr.equals("/")) {
             fr = Server.DEFAULT;
         }
+        if(!fr.contains(".")){
+            fr = fr + ".html";
+        }
+
         //init file io
         byte[]data;
         String mime;
@@ -148,6 +153,8 @@ public class Response implements Runnable {
             sock.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally{
+            Thread.currentThread().interrupt();
         }
     }
 }
