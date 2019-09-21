@@ -20,7 +20,7 @@ public class Server {
             Util.log("Server started.\nListening for connections on port : " + port + " ...\n", 1);
             // we listen until user halts server execution
             while (true) {
-                Response response = new Response(sc.accept());
+                ServerThread response = new ServerThread(sc.accept());
                 // create dedicated thread to manage the client connection
                 new Thread(response).start();
                 Util.log("Server ready for more connections", 0);

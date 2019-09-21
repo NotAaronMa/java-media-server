@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.StringTokenizer;
 
 
-public class Response implements Runnable {
+public class ServerThread implements Runnable {
 
     //Socket
     private Socket sock;
@@ -27,7 +27,7 @@ public class Response implements Runnable {
     private BufferedOutputStream dout;
 
 
-    public Response(Socket s) {
+    public ServerThread(Socket s) {
         sock = s;
     }
 
@@ -53,7 +53,7 @@ public class Response implements Runnable {
         Util.log(req, 0);
     }
 
-    //handle GET HEAD request
+    //handle HEAD request
     private void head(String req) throws IOException{
         StringTokenizer t1 = new StringTokenizer(req);
         t1.nextToken(" ");
@@ -102,6 +102,8 @@ public class Response implements Runnable {
             Util.log("404 " + fr + "not found. sending: " + Server.NOTFOUND + " mime=" + mime, 0);
         }
 
+
+
         //send only requested bytes
         //int bs,bf;
 
@@ -121,7 +123,9 @@ public class Response implements Runnable {
 
     @Override
     public void run() {
-        try {
+        try{
+        while(!sock.isClosed()){
+
             //init io
             in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             out = new PrintWriter(sock.getOutputStream());
@@ -131,9 +135,7 @@ public class Response implements Runnable {
             //parse request to buffer
             String next;
             while (!(next = in.readLine()).equals("")) {
-                for (int i = 0; i < next.length(); i++) {
-                    buffer.append(next.charAt(i));
-                }
+                buffer.append(next + "\n");
             }
             //copy buffer to a String
 
@@ -143,17 +145,16 @@ public class Response implements Runnable {
             handlereq(request);
             //clean up
 
-            System.out.println(buffer);
+            System.out.println(Thread.currentThread().getName() + " handling request: " + buffer);
             //copy
-
-
-            in.close();
-            out.close();
-            dout.close();
-            sock.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally{
+        }
+        in.close();
+        out.close();
+        dout.close();
+        sock.close();
+        }catch(IOException ex){
+           Util.log(ex.getMessage(), 1);
+        }finally{
             Thread.currentThread().interrupt();
         }
     }
