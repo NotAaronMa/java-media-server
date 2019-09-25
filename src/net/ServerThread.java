@@ -32,7 +32,7 @@ public class ServerThread implements Runnable {
     private void handlereq(String req) throws IOException {
         StringTokenizer t = new StringTokenizer(req); //tokenizer for the whole request
         String rt = new StringTokenizer(t.nextToken("\n")).nextToken();
-        //Util.log("Handling request: " + req, 0);
+        Util.log("Handling request: " + req, 0);
         boolean ka = req.contains("keep-aliveCookie");
         if (rt.equals("GET")) {
             get(req);
@@ -86,8 +86,10 @@ public class ServerThread implements Runnable {
         //init file io
         byte[] data;
         String mime;
+
         Path p = Paths.get(Main.WEB_ROOT, fr);
         mime = Files.probeContentType(p);
+
 
         //check if file exists
         if (Server.cansend(p)) {
@@ -97,8 +99,6 @@ public class ServerThread implements Runnable {
             data = Util.rf(Paths.get(Main.WEB_ROOT, Server.NOTFOUND));
             Util.log("404 " + fr + "not found. sending: " + Server.NOTFOUND + " mime=" + mime, 0);
         }
-
-
         //send only requested bytes
         //int bs,bf;
 
@@ -122,7 +122,7 @@ public class ServerThread implements Runnable {
             in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             out = new PrintWriter(sock.getOutputStream());
             dout = new BufferedOutputStream(sock.getOutputStream());
-            while (!sock.isClosed()) {
+            do{
                 //init io
                 StringBuffer buffer = new StringBuffer();
                 //parse request to buffer
@@ -134,11 +134,12 @@ public class ServerThread implements Runnable {
                 handlereq(request);
                 out.flush();
                 dout.flush();
-            }
+            }while(!sock.isClosed());
             in.close();
             out.close();
             dout.close();
             sock.close();
+
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {

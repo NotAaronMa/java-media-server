@@ -1,7 +1,5 @@
 package mpack;
 
-import net.Server;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,10 +20,10 @@ public class Util {
         return data;
     }
 
-    public static String[]readLines(Path p) throws IOException {
+    public static String[] readLines(Path p) throws IOException {
         List<String> in = Files.readAllLines(p);
-        String[]s = new String[in.size()];
-        for(int i = 0; i < in.size(); i++){
+        String[] s = new String[in.size()];
+        for (int i = 0; i < in.size(); i++) {
             s[i] = in.get(i);
         }
         return s;
@@ -33,25 +31,25 @@ public class Util {
 
     public static Path[] getChildren(Path dir) throws IOException {
         Stream<Path> p = Files.list(dir);
-        Object[]a = p.toArray();
-        Path[]s = new Path[a.length];
-        for(int i = 0; i < a.length; i++){
-            s[i] = (Path)a[i];
+        Object[] a = p.toArray();
+        Path[] s = new Path[a.length];
+        for (int i = 0; i < a.length; i++) {
+            s[i] = (Path) a[i];
         }
-       return s;
+        return s;
     }
-
 
 
     public static void log(String s, int priority) {
         boolean veb = Main.verbose;
         if (veb || priority == 1) {
-          //  System.out.println(s);
+            //System.out.println(Thread.currentThread().getName() + " " + s);
 
         }
     }
 
-    public static void parseConfig(String cfgfile) { ;
+    public static void parseConfig(String cfgfile) {
+        ;
         try {
             byte[] inb = (rf(cfgfile));
             char[] chars = new char[inb.length];

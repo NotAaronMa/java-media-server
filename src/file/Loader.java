@@ -21,6 +21,7 @@ public class Loader {
 
 
     public static void update() {
+
         try {
             Path genpath = Path.of(Main.WEB_ROOT, genDir);
             if (!Files.exists(genpath)) {
@@ -55,9 +56,9 @@ public class Loader {
         Path[] vidpaths = Util.getChildren(vdir);
         String[] input = Util.readLines(Path.of(Main.ROOT, pltemp));
         StringBuffer buffer = new StringBuffer();
-        vidPath[]vp = new vidPath[vidpaths.length];
+        vidPath[] vp = new vidPath[vidpaths.length];
 
-        for(int i = 0; i < vp.length; i++){
+        for (int i = 0; i < vp.length; i++) {
             vp[i] = new vidPath(vidpaths[i]);
         }
         Arrays.sort(vp);
@@ -85,17 +86,17 @@ public class Loader {
         return "<li class = \"video-select\" id=\"" + path + "\">" + filename + "</li> \n";
 
 
-
     }
 
-    private static class vidPath implements Comparable<vidPath>{
+    private static class vidPath implements Comparable<vidPath> {
         final Path p;
         final String name;
 
-        public vidPath(Path p){
+        public vidPath(Path p) {
             this.p = p;
             this.name = p.getFileName().toString();
         }
+
         @Override
         public int compareTo(vidPath vp) {
             return this.name.compareTo(vp.name);

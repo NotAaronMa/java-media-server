@@ -14,12 +14,14 @@ public class Server {
     public static String name;
     static String DEFAULT = "index.html";
     static String NOTFOUND = "404.html";
+
     public static void start() {
         try {
             ServerSocket sc = new ServerSocket(port);
             Util.log("Server started.\nListening for connections on port : " + port + " ...\n", 1);
             // we listen until user halts server execution
             while (true) {
+                System.out.println(Thread.getAllStackTraces().keySet().size());
                 ServerThread response = new ServerThread(sc.accept());
                 // create dedicated thread to manage the client connection
                 new Thread(response).start();
@@ -31,10 +33,10 @@ public class Server {
     }
 
     //handle fileNotFound and permissions
-    public static boolean cansend(Path p){
-        if(Files.exists(p)) {
+    public static boolean cansend(Path p) {
+        if (Files.exists(p)) {
             return p.toString().contains(Main.WEB_ROOT);
-        }else{
+        } else {
             return false;
         }
     }
