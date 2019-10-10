@@ -43,7 +43,7 @@ public class Util {
     public static void log(String s, int priority) {
         boolean veb = Main.verbose;
         if (veb || priority == 1) {
-            //System.out.println(Thread.currentThread().getName() + " " + s);
+            System.out.println(Thread.currentThread().getName() + " " + s);
 
         }
     }

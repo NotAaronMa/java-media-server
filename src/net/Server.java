@@ -4,6 +4,7 @@ package net;
 import mpack.Main;
 import mpack.Util;
 
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
@@ -21,17 +22,16 @@ public class Server {
             Util.log("Server started.\nListening for connections on port : " + port + " ...\n", 1);
             // we listen until user halts server execution
             while (true) {
-                System.out.println(Thread.getAllStackTraces().keySet().size());
-                ServerThread response = new ServerThread(sc.accept());
+                Socket c = sc.accept();
+                ServerThread Response = new ServerThread(c);
                 // create dedicated thread to manage the client connection
-                new Thread(response).start();
+                new Thread(Response).start();
                 Util.log("Server ready for more connections", 0);
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
-
     //handle fileNotFound and permissions
     public static boolean cansend(Path p) {
         if (Files.exists(p)) {

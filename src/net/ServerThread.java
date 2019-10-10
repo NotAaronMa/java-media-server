@@ -30,9 +30,10 @@ public class ServerThread implements Runnable {
     }
 
     private void handlereq(String req) throws IOException {
+
         StringTokenizer t = new StringTokenizer(req); //tokenizer for the whole request
         String rt = new StringTokenizer(t.nextToken("\n")).nextToken();
-        Util.log("Handling request: " + req, 0);
+        Util.log("Handling request: "  + rt, 0);
         boolean ka = req.contains("keep-aliveCookie");
         if (rt.equals("GET")) {
             get(req);
@@ -41,13 +42,14 @@ public class ServerThread implements Runnable {
         } else if (rt.equals("POST")) {
             post(req);
         }
-        Util.log("finished handling request: " + rt, 0);
+        out.flush();
+        dout.flush();
+        Util.log("Done handling request: "  + rt, 0);
     }
 
 
     //handle POST request
     private void post(String req) {
-        Util.log(req, 0);
     }
 
     //handle HEAD request
@@ -131,9 +133,8 @@ public class ServerThread implements Runnable {
                     buffer.append(next + "\n");
                 }
                 String request = buffer.toString();
+
                 handlereq(request);
-                out.flush();
-                dout.flush();
             }while(!sock.isClosed());
             in.close();
             out.close();
