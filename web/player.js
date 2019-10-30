@@ -15,7 +15,6 @@ for(let i = 0; i < vlist.length; i++){
 
 
 function setSource(){
-
     for(let i = 0 ;i < vlist.length;i ++){
         vlist[i].style=null;
     }

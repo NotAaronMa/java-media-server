@@ -78,6 +78,7 @@ public class ServerThread implements Runnable {
         t1.nextToken(" ");
         String fr = t1.nextToken(" ");
         //find file requested
+        fr = fr.replace("%20", " ");
         if (fr.equals("/")) {
             fr = Server.DEFAULT;
         }

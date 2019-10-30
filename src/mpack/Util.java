@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 public class Util {
 
+    //file io stuff
 
     public static byte[] rf(String dir) throws IOException {
         byte[] data = Files.readAllBytes(Path.of(dir));
@@ -39,6 +40,13 @@ public class Util {
         return s;
     }
 
+    public static void overWrite(Path p, StringBuffer b) throws IOException {
+        Files.deleteIfExists(p);
+        Files.createFile(p);
+        Files.writeString(p,b.toString());
+    }
+    //logging
+
 
     public static void log(String s, int priority) {
         boolean veb = Main.verbose;
@@ -48,23 +56,5 @@ public class Util {
         }
     }
 
-    public static void parseConfig(String cfgfile) {
-        ;
-        try {
-            byte[] inb = (rf(cfgfile));
-            char[] chars = new char[inb.length];
-            for (int i = 0; i < inb.length; i++) {
-                chars[i] = (char) inb[i];
-            }
-            StringTokenizer t = new StringTokenizer(new String(chars));
-            while (t.hasMoreElements()) {
-                String s = t.nextToken("\n");
-                System.out.print(s + "\n");
 
-            }
-        } catch (IOException ex) {
-            Util.log(ex.getMessage(), 1);
-
-        }
-    }
 }
