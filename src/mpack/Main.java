@@ -11,7 +11,6 @@ import java.util.StringTokenizer;
 public class Main {
     public static String ROOT;
     public static String WEB_ROOT;
-    public static String ASSET_ROOT;
     public static boolean verbose;
     public static String configfile;
 
@@ -27,7 +26,6 @@ public class Main {
 
     public static void parseArgs(String[] args) {
         for (int i = 0; i < args.length; i++) {
-
             if (args[i].equals("-v")) {
                 verbose = true;
             } else if (args[i].equals("-c")) {
@@ -40,7 +38,12 @@ public class Main {
 
     public static void parseConfig(String[] cfg) {
         for(String s: cfg){
+            String[]tk = s.split(" ");
+            if(tk[0].equals("root_dir")){
+                ROOT = tk[1];
+            }else if(tk[0].equals("web_dir")){
 
+            }
         }
     }
 

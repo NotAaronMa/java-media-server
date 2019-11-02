@@ -11,7 +11,9 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 
@@ -19,7 +21,6 @@ public class ServerThread implements Runnable {
 
     //Socket
     private Socket sock;
-    //io
     private BufferedReader in;
     private PrintWriter out;
     private BufferedOutputStream dout;
@@ -28,98 +29,8 @@ public class ServerThread implements Runnable {
     public ServerThread(Socket s) {
         sock = s;
     }
-
-    private void handlereq(String req) throws IOException {
-
-        StringTokenizer t = new StringTokenizer(req); //tokenizer for the whole request
-        String rt = new StringTokenizer(t.nextToken("\n")).nextToken();
-        Util.log("Handling request: "  + rt, 0);
-        boolean ka = req.contains("keep-aliveCookie");
-        if (rt.equals("GET")) {
-            get(req);
-        } else if (rt.equals("HEAD")) {
-            head(req);
-        } else if (rt.equals("POST")) {
-            post(req);
-        }
-        out.flush();
-        dout.flush();
-        Util.log("Done handling request: "  + rt, 0);
-    }
-
-
-    //handle POST request
-    private void post(String req) {
-    }
-
-    //handle HEAD request
-    private void head(String req) throws IOException {
-        StringTokenizer t1 = new StringTokenizer(req);
-        t1.nextToken(" ");
-        String fr = t1.nextToken(" ");
-        if (fr.equals("/")) {
-            fr = Server.DEFAULT;
-        } else if (Files.notExists(Path.of(Main.WEB_ROOT, fr))) {
-            fr = Server.NOTFOUND;
-        }
-        Path p = Path.of(Main.WEB_ROOT, fr);
-        String mime = Files.probeContentType(p);
-        out.println("HTTP/1.1 200 OK");
-        out.println("net.Server:" + Server.name + " : 1.0");
-        out.println("Date: " + new Date());
-        out.println("Content-type: " + mime);
-        out.println("Content-length: " + Files.size(p));
-        out.println();
-    }
-
-    //handle GET file request
-    private void get(String req) throws IOException {
-        StringTokenizer t1 = new StringTokenizer(req);
-        t1.nextToken(" ");
-        String fr = t1.nextToken(" ");
-        //find file requested
-        fr = fr.replace("%20", " ");
-        if (fr.equals("/")) {
-            fr = Server.DEFAULT;
-        }
-        if (!fr.contains(".")) {
-            fr = fr + ".html";
-        }
-
-        //init file io
-        byte[] data;
-        String mime;
-
-        Path p = Paths.get(Main.WEB_ROOT, fr);
-        mime = Files.probeContentType(p);
-
-
-        //check if file exists
-        if (Server.cansend(p)) {
-            data = Util.rf(p);
-            Util.log("sending: " + fr + " mime=" + mime, 0);
-        } else {
-            data = Util.rf(Paths.get(Main.WEB_ROOT, Server.NOTFOUND));
-            Util.log("404 " + fr + "not found. sending: " + Server.NOTFOUND + " mime=" + mime, 0);
-        }
-        //send only requested bytes
-        //int bs,bf;
-
-        //send headers
-        out.println("HTTP/1.1 200 OK");
-        out.println("net.Server:" + Server.name + " : 1.0");
-        out.println("Date: " + new Date());
-        out.println("Content-type: " + mime);
-        out.println("Content-length: " + data.length);
-        out.println(); // blank line between headers and content, very important !
-        //send file
-        dout.write(data, 0, data.length);
-    }
-
-
     @Override
     public void run() {
-
         try {
             //init IO
             in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
@@ -127,15 +38,23 @@ public class ServerThread implements Runnable {
             dout = new BufferedOutputStream(sock.getOutputStream());
             do{
                 //init io
-                StringBuffer buffer = new StringBuffer();
+                StringBuffer header = new StringBuffer();
                 //parse request to buffer
-                String next;
-                while (!(next = in.readLine()).equals("")) {
-                    buffer.append(next + "\n");
+                String next = in.readLine();
+                int bl = 0;
+                //parse until empty line for request header
+                do {
+                    if(next.contains("Content-Length:"))
+                        bl = Integer.parseInt(next.split(" ")[1]);
+                    header.append(next + "\n");
+                    next = in.readLine();
+                }while(!next.isEmpty());
+                //parse request body
+                char[]body = new char[bl];
+                if(bl != 0) {
+                    in.read(body);
                 }
-                String request = buffer.toString();
-
-                handlereq(request);
+                handlereq(header.toString(),String.valueOf(bl));
             }while(!sock.isClosed());
             in.close();
             out.close();
@@ -148,4 +67,65 @@ public class ServerThread implements Runnable {
             Thread.currentThread().interrupt();
         }
     }
+
+    private void handlereq(String header, String body) throws IOException {
+        StringTokenizer t = new StringTokenizer(header); //tokenizer for the whole request
+        String rt = new StringTokenizer(t.nextToken("\n")).nextToken();
+        Util.log("Handling request: "  + rt, 0);
+        System.out.println(header);
+        if (rt.equals("GET")) {
+            get(header);
+        } else if (rt.equals("HEAD")) {
+            head(header);
+        } else if (rt.equals("POST")) {
+            post(header);
+        }
+        out.flush();
+        dout.flush();
+        Util.log("Done handling request: "  + rt, 0);
+    }
+
+    //handle POST request
+    private void post(String req) {
+    }
+
+    //handle HEAD request
+    private void head(String req) throws IOException {
+        StringTokenizer t1 = new StringTokenizer(req);
+        t1.nextToken(" ");
+        String fr = t1.nextToken(" ");
+        Path p = Server.getFile(req);
+        String mime = Files.probeContentType(p);
+        HashMap<String,String>options = new HashMap<>();
+        options.put("Content-Type",mime);
+        options.put("Content-Length", Files.size(p) + "");
+        out.print(HeaderUtils.genHeaders(options));
+    }
+
+    //handle GET file request
+    private void get(String req) throws IOException {
+        Util.log(req, 1);
+        StringTokenizer t1 = new StringTokenizer(req);
+        t1.nextToken(" ");
+        String fr = t1.nextToken(" ");
+        //find file requested
+        //init file io
+        byte[] data;
+        String mime;
+        Path p = Server.getFile(fr);
+        mime = Files.probeContentType(p);
+        //check if file exists
+        data = Util.rf(p);
+        HashMap<String,String>options = new HashMap<>();
+        options.put("Content-Type",mime);
+        options.put("Content-Length", data.length + "");
+        System.out.println("Sending file"  + p.toString());
+
+        out.print(HeaderUtils.genHeaders(options));
+        //send file
+        dout.write(data, 0, data.length);
+    }
+
+
+
 }

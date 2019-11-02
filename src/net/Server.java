@@ -16,6 +16,7 @@ public class Server {
     static String DEFAULT = "index.html";
     static String NOTFOUND = "404.html";
 
+
     public static void start() {
         try {
             ServerSocket sc = new ServerSocket(port);
@@ -32,8 +33,19 @@ public class Server {
             ex.printStackTrace();
         }
     }
+
+    public static Path getFile(String req){
+        if (req.equals("/")) {
+            req = DEFAULT;
+        } else if (Files.notExists(Path.of(Main.WEB_ROOT, req))) {
+            req = NOTFOUND;
+        }
+        Path rtn = Path.of(Main.WEB_ROOT,req);
+        return canSend(rtn)? rtn:Path.of(Main.WEB_ROOT,NOTFOUND);
+    }
+
     //handle fileNotFound and permissions
-    public static boolean cansend(Path p) {
+    private static boolean canSend(Path p) {
         if (Files.exists(p)) {
             return p.toString().contains(Main.WEB_ROOT);
         } else {

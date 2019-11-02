@@ -51,7 +51,6 @@ public class Loader {
         //only make one level to avoid fucking up filesystem
         String flag = "<!-- FLAG PUT LINKS HERE -->";
         Path[] rawPaths = Util.getChildren(vidDir);
-
         String[] input = Util.readLines(Path.of(Main.ROOT, playlistTemplate));
         StringBuffer buffer = new StringBuffer();
         WrappedPath[] vp = new WrappedPath[rawPaths.length];
@@ -73,22 +72,33 @@ public class Loader {
         }
         Util.overWrite(outFile, buffer);
     }
-    private static void WriteIndexPage(Path outFile, WrappedPath[]pl){
+    private static void WriteIndexPage(Path outFile, WrappedPath[]pl) throws IOException {
+        String flag = "<!-- FLAG PUT LINKS HERE -->";
         StringBuffer buffer = new StringBuffer();
-
-
+        String[]input = Util.readLines(Path.of(Main.ROOT,indexTemplate));
+        Arrays.sort(pl);
+        for(String s : input){
+            if (s.contains(flag)){
+               for(WrappedPath wp : pl){
+                   buffer.append(genIndexEntry(wp));
+               }
+            }else{
+                buffer.append(s.strip() + "\n");
+            }
+        }
+        Util.overWrite(outFile,buffer);
     }
 
     //note give this function absolute path
     private static String genVidEntry(WrappedPath p) {
         String path = p.p.toAbsolutePath().toString().replace(Main.WEB_ROOT, "");
         String filename = p.name;
-        return "<li class = \"video-select\" id=\"" + path + "\">" + filename + "</li> \n";
+        return "<li class = \"select-elem\" id=\"" + path + "\">" + filename + "</li> \n";
     }
     private static String genIndexEntry(WrappedPath p) {
         String path = p.p.toAbsolutePath().toString().replace(Main.WEB_ROOT, "");
         String filename = p.name;
-        return "<li class = \"selct-box\" id=\"" + path + "\">" + filename + "</li> \n";
+        return "<li class = \"select-elem\" id=\"" + path + "\">" + filename + "</li> \n";
     }
 
 }

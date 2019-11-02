@@ -10,7 +10,6 @@ let video_loaded = false;
 
 for(let i = 0; i < vlist.length; i++){
     vlist[i].addEventListener("click",setSource);
-
 }
 
 

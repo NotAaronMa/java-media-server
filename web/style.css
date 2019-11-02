@@ -8,13 +8,13 @@ html{
     margin-left: 15%;
     background: rgb(0,0,0);
 }
-.video-select-list{
+.select-list{
     text-align:center;
     margin-left: 20%;
     width: 60%;
 
 }
-.video-select{
+.select-elem{
     list-style-type:none;
     position: relative;
     border-style:solid;
