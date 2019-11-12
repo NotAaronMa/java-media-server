@@ -58,9 +58,6 @@ public class Loader {
             vp[i] = new WrappedPath(rawPaths[i]);
         }
         Arrays.sort(vp);
-        for(WrappedPath p: vp){
-            System.out.println(p.name);
-        }
         for(String s  : input) {
             if(s.contains(flag)){
                 for(WrappedPath wp : vp) {

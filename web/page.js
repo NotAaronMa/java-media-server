@@ -5,5 +5,4 @@ for(let i = 0; i < entries.length; i++){
 
 function entrybehavior(){
     window.location.href = this.id
-
 }

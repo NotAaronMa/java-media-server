@@ -3,16 +3,12 @@
 
 package net;
 
-import mpack.Main;
 import mpack.Util;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
@@ -54,7 +50,7 @@ public class ServerThread implements Runnable {
                 if(bl != 0) {
                     in.read(body);
                 }
-                handlereq(header.toString(),String.valueOf(bl));
+                handleReq(header.toString(),String.valueOf(bl));
             }while(!sock.isClosed());
             in.close();
             out.close();
@@ -68,21 +64,20 @@ public class ServerThread implements Runnable {
         }
     }
 
-    private void handlereq(String header, String body) throws IOException {
-        StringTokenizer t = new StringTokenizer(header); //tokenizer for the whole request
-        String rt = new StringTokenizer(t.nextToken("\n")).nextToken();
-        Util.log("Handling request: "  + rt, 0);
-        System.out.println(header);
-        if (rt.equals("GET")) {
-            get(header);
-        } else if (rt.equals("HEAD")) {
-            head(header);
-        } else if (rt.equals("POST")) {
-            post(header);
+    private void handleReq(String header, String body) throws IOException {
+        HashMap<String,String> headerops = HeaderUtils.parseHeader(header);
+        String requestType = headerops.get("RequestType");
+        switch(requestType.toLowerCase().charAt(0)){
+            case 'g':
+                get(headerops);
+            case 'h':
+
+            case 'p':
+
         }
         out.flush();
         dout.flush();
-        Util.log("Done handling request: "  + rt, 0);
+        Util.log("Done handling request: "  + requestType, 0);
     }
 
     //handle POST request
@@ -90,26 +85,20 @@ public class ServerThread implements Runnable {
     }
 
     //handle HEAD request
-    private void head(String req) throws IOException {
-        StringTokenizer t1 = new StringTokenizer(req);
-        t1.nextToken(" ");
-        String fr = t1.nextToken(" ");
-        Path p = Server.getFile(req);
+    private void head(HashMap<String,String> ops) throws IOException {
+        String fr = ops.get("File");
+        Path p = Server.getFile(fr);
         String mime = Files.probeContentType(p);
-        HashMap<String,String>options = new HashMap<>();
-        options.put("Content-Type",mime);
+        HashMap<String, String> options = new HashMap<>();
+        options.put("Content-Type", mime);
         options.put("Content-Length", Files.size(p) + "");
         out.print(HeaderUtils.genHeaders(options));
+        out.flush();
     }
 
     //handle GET file request
-    private void get(String req) throws IOException {
-        Util.log(req, 1);
-        StringTokenizer t1 = new StringTokenizer(req);
-        t1.nextToken(" ");
-        String fr = t1.nextToken(" ");
-        //find file requested
-        //init file io
+    private void get(HashMap<String,String> ops) throws IOException {
+        String fr = ops.get("File");
         byte[] data;
         String mime;
         Path p = Server.getFile(fr);
@@ -119,11 +108,11 @@ public class ServerThread implements Runnable {
         HashMap<String,String>options = new HashMap<>();
         options.put("Content-Type",mime);
         options.put("Content-Length", data.length + "");
-        System.out.println("Sending file"  + p.toString());
-
         out.print(HeaderUtils.genHeaders(options));
-        //send file
-        dout.write(data, 0, data.length);
+        out.flush();
+        dout.write(data,0,data.length);
+        System.out.println("sent file: " + fr + "mimetype: " + mime);
+
     }
 
 

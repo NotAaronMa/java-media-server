@@ -1,5 +1,6 @@
 package mpack;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,12 +11,6 @@ import java.util.stream.Stream;
 public class Util {
 
     //file io stuff
-
-    public static byte[] rf(String dir) throws IOException {
-        byte[] data = Files.readAllBytes(Path.of(dir));
-        return data;
-    }
-
     public static byte[] rf(Path dir) throws IOException {
         byte[] data = Files.readAllBytes(dir);
         return data;
@@ -29,7 +24,6 @@ public class Util {
         }
         return s;
     }
-
     public static Path[] getChildren(Path dir) throws IOException {
         Stream<Path> p = Files.list(dir);
         Object[] a = p.toArray();
@@ -39,15 +33,25 @@ public class Util {
         }
         return s;
     }
-
     public static void overWrite(Path p, StringBuffer b) throws IOException {
         Files.deleteIfExists(p);
         Files.createFile(p);
         Files.writeString(p,b.toString());
     }
+
+    public static Path UNIXfindCfg() throws FileNotFoundException {
+        Path file = Path.of(Main.ROOT,"config");
+        String userhome = System.getenv("HOME");
+        System.out.println(userhome);
+        if(Files.exists(Path.of(userhome,".config/ojms/config"))){
+
+            file = Path.of(userhome,".config/ojms/config");
+        }else if(Files.exists(Path.of("/etc/ojms/config"))){
+            file = Path.of("/etc/ojms/config");
+        }
+        return file;
+    }
     //logging
-
-
     public static void log(String s, int priority) {
         boolean veb = Main.verbose;
         if (veb || priority == 1) {

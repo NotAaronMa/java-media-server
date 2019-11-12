@@ -8,9 +8,15 @@ public class HeaderUtils {
 
 
     public static HashMap<String,String>parseHeader(String header){
+        String[]headerLines = header.split("\n");
         HashMap<String,String> options = new HashMap<>();
-        for(int i = 0; i < header.length(); i++){
-            String[]s = header.split(" ");
+        String[]h0 = headerLines[0].split(" ");
+        options.put("RequestType", h0[0]);
+        options.put("File",h0[1]);
+        options.put("HTTP", h0[2]);
+
+        for(int i = 1; i < headerLines.length; i++){
+            String[]s = headerLines[i].split(" ");
             options.put(s[0].replace(":",""), s[1]);
         }
         return options;

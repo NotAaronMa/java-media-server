@@ -11,8 +11,10 @@ let video_loaded = false;
 for(let i = 0; i < vlist.length; i++){
     vlist[i].addEventListener("click",setSource);
 }
+setSource(0);
 
-
+//set video source
+//let video-js handle the rest
 function setSource(){
     for(let i = 0 ;i < vlist.length;i ++){
         vlist[i].style=null;
@@ -21,9 +23,8 @@ function setSource(){
     video_loaded = false;
     vsource.src=this.id;
     player.load();
-
+    player.play();
 }
-
 
 
 

@@ -35,9 +35,11 @@ public class Server {
     }
 
     public static Path getFile(String req){
+        req = req.replace("%20"," ");
+
         if (req.equals("/")) {
             req = DEFAULT;
-        } else if (Files.notExists(Path.of(Main.WEB_ROOT, req))) {
+        }else if (Files.notExists(Path.of(Main.WEB_ROOT, req))) {
             req = NOTFOUND;
         }
         Path rtn = Path.of(Main.WEB_ROOT,req);
