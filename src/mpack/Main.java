@@ -17,10 +17,9 @@ public class Main {
     public static Path configfile;
 
     public static void main(String[] args) throws IOException {
-        ROOT = new File("").getAbsolutePath();
+        ROOT = new File("/srv/ojms").getAbsolutePath();
         WEB_ROOT = ROOT + "/web";
         configfile = Util.UNIXfindCfg();
-        parseConfig(Util.readLines(configfile));
 
         Loader.update();
         Server.start();
@@ -29,7 +28,8 @@ public class Main {
     public static HashMap<String,String> parseConfig(String[] cfg) {
         HashMap<String,String> options = new HashMap<>();
         for(String s: cfg){
-            System.out.println(s);
+            String[]tk = s.split(" ");
+            options.put(tk[0], tk[1]);
         }
         return options;
     }
